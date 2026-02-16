@@ -171,3 +171,9 @@ for n in valores_n:
     print("\n--- PEOR CASO (EXTREMO) ---")
     for clave, valor in resultado_peor_extremo.items():
         print(f"{clave}: {valor}")
+        
+# la búsqueda binaria es eficiente para listas ordenadas, 
+# con una complejidad de O(log n) en el peor caso.
+
+# al crecer la lista, las comparaciones aumentan muy poco, ya que en cada paso 
+# reduce el problema a la mitad.
