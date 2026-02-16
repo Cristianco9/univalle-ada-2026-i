@@ -4,7 +4,7 @@
 import time
 import math
 from typing import List, Tuple, Dict
-import random
+
 
 ## Ejercicio 1.2 - Operación O(n)
 
