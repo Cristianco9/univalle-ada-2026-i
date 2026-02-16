@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# Author : Cristianco9 cristian_cortes_ortiz@hotmail.com
+
 import time 
 
 ## Ejercicio 1.1 - Operación O(1)
