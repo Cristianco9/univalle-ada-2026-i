@@ -10,18 +10,56 @@
 
 **Profesor:** Daniel Quintero Capera  
 
-**Fecha:** 16 Febrero 2026
+**Fecha:** 24 Febrero 2026
 
 ---
 
 # Análisis y Diseño de Algoritmos
-## Complejidad Algorítmica
+# Taller de Complejidad Algorítmica (Big O)
+
+## Objetivo
+
+Analizar el crecimiento asintótico de funciones y algoritmos usando el criterio 
+del límite y la notación Big O.
 
 ---
 
-**OBJETIVO**: 
-Implementar operaciones de complejidad temporal O(1) 
-y analizar su comportamiento en términos de tiempo y espacio.
+## Contenido
+
+### Módulo 1 – Rigor Matemático
+
+Demostración de relaciones asintóticas usando:
+
+\[
+\lim_{n \to \infty} \frac{f(n)}{g(n)}
+\]
+
+Ejercicios:
+
+- \(7n^2 + 5n + 2 = O(n^2)\)
+- \(\ln(n) = O(n)\)
+- Comparación entre \(n!\) y \(2^n\)
+
+---
+
+### Módulo 2 – Análisis de Algoritmos
+
+Identificación de:
+- Mejor caso
+- Peor caso
+- Complejidad Big O
+
+Ejemplos:
+
+- Búsqueda lineal → O(n)
+- Crecimiento por duplicación → O(log n)
+
+---
+
+### Módulo 3 – Implementación
+
+- Intersección de listas (O(n²) vs O(n))
+- Fibonacci recursivo y su complejidad O(2^n)
 
 ---
 
