@@ -11,6 +11,7 @@
 **Profesor:** Daniel Quintero Capera  
 
 **Fecha:** 24 Febrero 2026
+**Fecha:** 24 Febrero 2026
 
 ---
 
@@ -30,15 +31,13 @@ del límite y la notación Big O.
 
 Demostración de relaciones asintóticas usando:
 
-\[
-\lim_{n \to \infty} \frac{f(n)}{g(n)}
-\]
+> lim n→∞ f(n)/g(n) 
 
 Ejercicios:
 
-- \(7n^2 + 5n + 2 = O(n^2)\)
-- \(\ln(n) = O(n)\)
-- Comparación entre \(n!\) y \(2^n\)
+- 7n^2 + 5n + 2 = O(n^2)
+- ln(n) = O(n)
+- Comparación entre n! y 2^n
 
 ---
 
