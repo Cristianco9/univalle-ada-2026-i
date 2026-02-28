@@ -11,7 +11,6 @@
 **Profesor:** Daniel Quintero Capera  
 
 **Fecha:** 24 Febrero 2026
-**Fecha:** 24 Febrero 2026
 
 ---
 
