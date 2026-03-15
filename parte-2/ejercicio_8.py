@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Author : Cristianco9 cristian_cortes_ortiz@hotmail.com
 
-# Ejercicio 7
+# Ejercicio 8
 # Teorema Maestro Recursiones Sustractivas
 """ 
     T(n) = 
