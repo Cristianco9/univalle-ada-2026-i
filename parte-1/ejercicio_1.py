@@ -17,14 +17,14 @@
 # f(n) = n 
 # g = n 
 # ------------------------------------------------------------------------- 
-# n ^ (log base (b)^a)
-# n (log base 2 ^ 2) => (log base 2 ^ 2) = 1
-# n ^ 1 = n
+# n^(log base (b)^a)
+# n(log base 2^2) => (log base 2^2) = 1
+# n^1 = n
 # -------------------------------------------------------------------------
 # comparación
-# f(n) = θ(n ^ log base b ^ a)
+# f(n) = θ(n^log base b^a)
 # se aplica el caso
-# t(n) = θ(n ^ log(base b ^ a) * log(n)) 
+# t(n) = θ(n^log(base b^a) * log(n)) 
 # ------------------------------------------------------------------------- 
 # resultado final 
 # t(n) = θ(n(log(n))
