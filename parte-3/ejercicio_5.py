@@ -3,7 +3,8 @@
 
 # Ejercicio 5
 """
-Dividir el exponente en dos partes.
+Implementa el algoritmo Merge Sort para ordenar un arreglo. Escribe la recurrencia 
+que lo define y resuélvela.
 """
 # -------------------------------------------------------------------------
 # Recurrencia
