@@ -3,7 +3,8 @@
 
 # Ejercicio 4
 """
-Dividir el exponente en dos partes.
+Utiliza Divide y Vencerás para calcular 𝑎^𝑏 en tiempo eficiente. Explica cómo 
+este enfoque mejora el método ingenuo.
 """
 # -------------------------------------------------------------------------
 # Recurrencia
