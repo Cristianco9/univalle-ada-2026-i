@@ -19,7 +19,7 @@ class VentanaPrincipal:
 
         self.ventana.title("Sistema de Ordenamiento")
 
-        self.ventana.geometry("650x500")
+        self.ventana.geometry("650x650")
 
         self.ventana.resizable(False, False)
 
@@ -116,7 +116,7 @@ class VentanaPrincipal:
             width=20,
             command=lambda:
             self.ejecutar_algoritmo(
-                "bubble"
+                "burbuja"
             )
         )
 
@@ -128,7 +128,7 @@ class VentanaPrincipal:
             width=20,
             command=lambda:
             self.ejecutar_algoritmo(
-                "insertion"
+                "insercion"
             )
         )
 
@@ -140,7 +140,7 @@ class VentanaPrincipal:
             width=20,
             command=lambda:
             self.ejecutar_algoritmo(
-                "selection"
+                "seleccion"
             )
         )
 
