@@ -156,11 +156,22 @@ pip install openpyxl
 
 ## 4. Configurar Base de Datos SQLite
 
-Crear la base de datos SQLite:
+> La base de datos ya se encuentra configurada, en caso de error la configuración
+> es la siguiente
+
+Dirijase al directorio de la base de datos SQLite
 
 ```bash
 cd data
 ```
+
+Elimina el archivo `personas.db`
+
+```bash
+rm personas.db
+```
+
+Crear la base de datos SQLite:
 
 ```bash
 sqlite3 personas.db
