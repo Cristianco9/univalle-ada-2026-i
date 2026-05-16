@@ -1,5 +1,3 @@
-# database/connection.py
-
 import sqlite3
 
 

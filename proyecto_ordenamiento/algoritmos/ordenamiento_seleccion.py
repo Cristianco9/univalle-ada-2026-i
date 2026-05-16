@@ -1,6 +1,3 @@
-# algorithms/selection_sort.py
-
-
 def ordenamiento_seleccion(lista_personas, criterio):
     """
     Ordena una lista de personas usando Selection Sort.

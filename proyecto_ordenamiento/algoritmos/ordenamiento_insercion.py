@@ -1,6 +1,3 @@
-# algorithms/insertion_sort.py
-
-
 def ordenamiento_insercion(lista_personas, criterio):
     """
     Ordena una lista de personas usando Insertion Sort.
