@@ -68,6 +68,11 @@ empírico y teórico.
 ```bash
 git clone https://github.com/Cristianco9/univalle-ada-2026-i.git
 ```
+Entrar al directorio del repositorio:
+
+```bash
+cd univalle-ada-2026-i 
+```
 
 Entrar al proyecto:
 
@@ -154,6 +159,10 @@ pip install openpyxl
 Crear la base de datos SQLite:
 
 ```bash
+cd data
+```
+
+```bash
 sqlite3 personas.db
 ```
 
@@ -179,6 +188,10 @@ Salir:
 
 ```sql
 .quit
+```
+
+```bash
+cd ../
 ```
 
 ---
