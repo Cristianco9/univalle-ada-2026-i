@@ -3,9 +3,7 @@ import requests
 
 from dotenv import load_dotenv
 
-from telegram import (
-    Update
-)
+from telegram import Update
 
 from telegram.ext import (
     ApplicationBuilder,
@@ -52,6 +50,10 @@ Available commands:
 /train
 /status
 /predict
+/metrics
+/hardexamples
+/benchmark
+/complexity
 /help
 """
         )
@@ -173,6 +175,144 @@ async def predict(
         )
 
 
+async def metrics(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/metrics"
+    )
+
+    data = response.json()
+
+    text = (
+        "Training Metrics\n\n"
+    )
+
+    for key, value in (
+        data.items()
+    ):
+
+        if value is not None:
+
+            text += (
+                f"{key}: "
+                f"{value}%\n"
+            )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def hard_examples(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/hard-examples"
+    )
+
+    data = response.json()
+
+    text = (
+        "Hard Examples\n\n"
+    )
+
+    for loss, idx in (
+        data[
+            "hard_examples"
+        ]
+    ):
+
+        text += (
+            f"Sample {idx}"
+            f" → loss "
+            f"{loss:.4f}\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def benchmark(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/benchmark"
+    )
+
+    data = response.json()
+
+    text = (
+        "Benchmark Results\n\n"
+    )
+
+    for item in (
+        data[
+            "benchmark"
+        ]
+    ):
+
+        text += (
+            f"N={item['n']}\n"
+            f"Heap: "
+            f"{item['heap_time']:.6f}s\n"
+            f"Sort: "
+            f"{item['sort_time']:.6f}s\n\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def complexity(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/complexity"
+    )
+
+    data = response.json()
+
+    text = (
+        "Algorithm Complexity\n\n"
+    )
+
+    for key, value in (
+        data.items()
+    ):
+
+        text += (
+            f"{key} "
+            f"→ {value}\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
 def main():
 
     app = (
@@ -181,40 +321,26 @@ def main():
         .build()
     )
 
-    app.add_handler(
-        CommandHandler(
-            "start",
-            start
-        )
-    )
+    commands = [
+        ("start", start),
+        ("help", help_command),
+        ("train", train),
+        ("status", status),
+        ("predict", predict),
+        ("metrics", metrics),
+        ("hardexamples", hard_examples),
+        ("benchmark", benchmark),
+        ("complexity", complexity)
+    ]
 
-    app.add_handler(
-        CommandHandler(
-            "help",
-            help_command
-        )
-    )
+    for name, fn in commands:
 
-    app.add_handler(
-        CommandHandler(
-            "train",
-            train
+        app.add_handler(
+            CommandHandler(
+                name,
+                fn
+            )
         )
-    )
-
-    app.add_handler(
-        CommandHandler(
-            "status",
-            status
-        )
-    )
-
-    app.add_handler(
-        CommandHandler(
-            "predict",
-            predict
-        )
-    )
 
     print(
         "Bot running..."
