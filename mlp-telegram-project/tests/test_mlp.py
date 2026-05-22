@@ -6,6 +6,10 @@ from data.load_dataset import (
     get_iris_dataset
 )
 
+from utils.encoding import (
+    one_hot_encode
+)
+
 import numpy as np
 
 
@@ -17,30 +21,51 @@ import numpy as np
 ) = get_iris_dataset()
 
 
+y_train_encoded = (
+    one_hot_encode(
+        y_train,
+        3
+    )
+)
+
 model = NeuralNetwork(
     input_size=4,
     hidden_size=8,
-    output_size=3
+    output_size=3,
+    learning_rate=0.001
 )
 
+model.train(
+    X_train,
+    y_train_encoded,
+    epochs=100
+)
 
-sample = X_train[0]
+correct = 0
 
-prediction = (
-    model.forward(
-        sample
+for i in range(
+    len(X_test)
+):
+
+    prediction = (
+        model.predict(
+            X_test[i]
+        )
     )
-)
 
-print("\nPrediction probabilities:")
-print(prediction)
-
-print(
-    "\nPredicted class:"
-)
-
-print(
-    np.argmax(
+    if (
         prediction
-    )
+        == y_test[i]
+    ):
+        correct += 1
+
+
+accuracy = (
+    correct
+    / len(X_test)
+) * 100
+
+print(
+    f"\nTest Accuracy: "
+    f"{accuracy:.2f}%"
 )
