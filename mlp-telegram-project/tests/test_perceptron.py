@@ -2,23 +2,35 @@ from mlp.perceptron import (
     Perceptron
 )
 
-import numpy as np
+from data.simple_dataset import (
+    get_simple_dataset
+)
 
+
+X, y = get_simple_dataset()
 
 model = Perceptron(
-    input_size=4
+    input_size=2,
+    learning_rate=0.1,
+    epochs=20
 )
 
-sample = np.array(
-    [5.1, 3.5, 1.4, 0.2]
+model.train(
+    X,
+    y
 )
 
-prediction = (
-    model.predict(
-        sample
+print("\nPredictions:")
+
+for sample in X:
+
+    prediction = (
+        model.predict(
+            sample
+        )
     )
-)
 
-print(
-    f"Prediction: {prediction}"
-)
+    print(
+        f"{sample} -> "
+        f"{prediction}"
+    )
