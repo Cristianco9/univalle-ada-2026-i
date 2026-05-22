@@ -91,3 +91,36 @@ def hard_examples():
             .get_hard_examples()
         )
     }
+
+@app.get("/benchmark")
+def benchmark():
+
+    from experiments.benchmark import (
+        benchmark_top_k
+    )
+
+    return {
+        "benchmark":
+        benchmark_top_k()
+    }
+
+
+@app.get("/complexity")
+def complexity():
+
+    return {
+        "top_k_heap":
+        "O(n log k)",
+
+        "top_k_sort":
+        "O(n log n)",
+
+        "quickselect_average":
+        "O(n)",
+
+        "hash_table":
+        "O(1)",
+
+        "queue":
+        "O(1)"
+    }
