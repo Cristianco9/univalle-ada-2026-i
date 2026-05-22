@@ -71,3 +71,23 @@ def predict(
     )
 
     return prediction
+
+@app.get("/metrics")
+def metrics():
+
+    return (
+        model_service
+        .get_metrics()
+    )
+
+
+@app.get("/hard-examples")
+def hard_examples():
+
+    return {
+        "hard_examples":
+        (
+            model_service
+            .get_hard_examples()
+        )
+    }
