@@ -11,6 +11,8 @@ from telegram.ext import (
     ContextTypes
 )
 
+import json
+
 load_dotenv()
 
 TOKEN = os.getenv(
@@ -312,6 +314,110 @@ async def complexity(
         )
     )
 
+async def analize(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+    """
+    Uso:
+        /analize <código Python>
+
+    Ejemplo:
+        /analize for i in range(n):\n  for j in range(n):\n    pass
+
+    También acepta código multilínea si el usuario lo escribe
+    en el mismo mensaje después del comando.
+    """
+    # Tomar todo el texto después de /analize
+    if not context.args:
+        await update.message.reply_text(
+            "⚠️ Uso: /analize <código Python>\n\n"
+            "Ejemplo:\n"
+            "`/analize for i in range(n):\\n  for j in range(n):\\n    pass`\n\n"
+            "💡 También puedes pegar código multilínea directamente "
+            "como mensaje de texto.",
+            parse_mode="Markdown"
+        )
+        return
+
+    # Reconstruir el código desde los args (preserva espacios)
+    raw_text = update.message.text
+    # Remover "/analize " del inicio
+    code = raw_text[len("/analize "):].strip()
+    # Reemplazar \n literales por saltos de línea reales
+    code = code.replace("\\n", "\n").replace("\\t", "\t")
+
+    await _call_analize_api(update, code)
+
+async def analize_message(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+    """
+    Detecta si un mensaje de texto plano parece código Python
+    y lo analiza automáticamente.
+    Heurística: contiene "def ", "for ", "while " o "return ".
+    """
+    text = update.message.text.strip()
+    code_keywords = ("def ", "for ", "while ", "return ", "if ", "class ")
+
+    if any(kw in text for kw in code_keywords):
+        await update.message.reply_text(
+            "🔎 Parece código Python. Analizando complejidad...",
+            parse_mode="Markdown"
+        )
+        await _call_analize_api(update, text)
+
+async def _call_analize_api(update: Update, code: str):
+    try:
+        response = requests.post(
+            f"{API_URL}/analize",
+            json={"code": code},
+            timeout=10
+        )
+        data = response.json()
+
+        complexity = data.get("complexity", "?")
+        reason     = data.get("reason", "")
+        confidence = data.get("confidence", "")
+        details    = data.get("details", [])
+
+        # Emoji por complejidad
+        emoji_map = {
+            "O(1)":      "🟢",
+            "O(log n)":  "🟡",
+            "O(n)":      "🟡",
+            "O(n log n)":"🟠",
+            "O(n²)":     "🔴",
+            "O(n³)":     "🔴",
+            "O(2^n)":    "💀",
+            "O(n!)":     "💀",
+        }
+        emoji = emoji_map.get(complexity, "🔵")
+
+        text = (
+            f"🔍 *Análisis de Complejidad*\n\n"
+            f"{emoji} *Complejidad:* `{complexity}`\n"
+            f"💡 *Razón:* {reason}\n"
+            f"🎯 *Confianza:* {confidence}\n"
+        )
+
+        if details:
+            text += "\n📝 *Observaciones:*\n"
+            for d in details:
+                text += f"  • {d}\n"
+
+        await update.message.reply_text(
+            text,
+            parse_mode="Markdown"
+        )
+
+    except Exception as e:
+        await update.message.reply_text(
+            f"❌ Error al analizar: {str(e)}"
+        )
+
+
 
 def main():
 
@@ -330,7 +436,9 @@ def main():
         ("metrics", metrics),
         ("hardexamples", hard_examples),
         ("benchmark", benchmark),
-        ("complexity", complexity)
+        ("complexity", complexity),
+        ("analize", analize)
+
     ]
 
     for name, fn in commands:
@@ -345,6 +453,9 @@ def main():
     print(
         "Bot running..."
     )
+
+    from telegram.ext import MessageHandler, filters
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, analize_message))
 
     app.run_polling()
 

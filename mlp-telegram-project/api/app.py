@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import (
     FastAPI
 )
@@ -5,6 +9,16 @@ from fastapi import (
 from mlp.model_service import (
     model_service
 )
+
+from mlp.complexity_analyzer import analyze_complexity
+from pydantic import BaseModel
+
+from pydantic import BaseModel
+
+
+class CodeInput(BaseModel):
+    code: str
+
 
 app = FastAPI(
     title="MLP Algorithm API"
@@ -123,4 +137,25 @@ def complexity():
 
         "queue":
         "O(1)"
+    }
+
+@app.post("/analize")
+def analize(body: CodeInput):
+    """
+    Recibe un snippet de código Python y retorna su complejidad algorítmica.
+
+    Ejemplo de request body:
+    {
+        "code": "for i in range(n):\n  for j in range(n):\n    pass"
+    }
+    """
+    from mlp.complexity_analyzer import analyze_complexity
+
+    result = analyze_complexity(body.code)
+
+    return {
+        "complexity":  result.complexity,
+        "reason":      result.reason,
+        "confidence":  result.confidence,
+        "details":     result.details,
     }
