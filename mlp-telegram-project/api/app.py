@@ -10,11 +10,14 @@ from mlp.model_service import (
     model_service
 )
 
-from mlp.complexity_analyzer import analyze_complexity
+from complexity.complexity_analyzer import analyze_complexity
 from pydantic import BaseModel
 
 from pydantic import BaseModel
 
+from mlp.complexity_model_service import complexity_model_service
+
+from pydantic import BaseModel
 
 class CodeInput(BaseModel):
     code: str
@@ -139,23 +142,38 @@ def complexity():
         "O(1)"
     }
 
+@app.post("/train_complexity")
+def train_complexity():
+    """
+    Entrena el MLP con el dataset de snippets de código.
+    Llama a esto una vez antes de usar /analize.
+    En Telegram: /train_complexity
+    """
+    result = complexity_model_service.train_model()
+    return result
+
+
 @app.post("/analize")
 def analize(body: CodeInput):
     """
-    Recibe un snippet de código Python y retorna su complejidad algorítmica.
+    Recibe un snippet de código Python y retorna su complejidad
+    algorítmica predicha por el MLP.
 
-    Ejemplo de request body:
+    Ejemplo:
     {
         "code": "for i in range(n):\n  for j in range(n):\n    pass"
     }
     """
-    from mlp.complexity_analyzer import analyze_complexity
+    if not complexity_model_service.is_trained:
+        return {
+            "error": "Modelo no entrenado. Usa /train_complexity primero."
+        }
 
-    result = analyze_complexity(body.code)
+    result = complexity_model_service.predict_complexity(body.code)
+    return result
 
-    return {
-        "complexity":  result.complexity,
-        "reason":      result.reason,
-        "confidence":  result.confidence,
-        "details":     result.details,
-    }
+
+@app.get("/complexity_metrics")
+def complexity_metrics():
+    """Retorna accuracy y loss por época del entrenamiento del clasificador."""
+    return complexity_model_service.get_training_metrics()

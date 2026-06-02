@@ -418,6 +418,43 @@ async def _call_analize_api(update: Update, code: str):
         )
 
 
+async def train_complexity(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+    await update.message.reply_text(
+        "⏳ Entrenando MLP clasificador de complejidad...\n"
+        "Esto puede tardar unos segundos."
+    )
+
+    try:
+        response = requests.post(
+            f"{API_URL}/train_complexity",
+            timeout=120  # ← el entrenamiento puede tardar
+        )
+        data = response.json()
+
+        if "error" in data:
+            await update.message.reply_text(f"❌ Error: {data['error']}")
+            return
+
+        await update.message.reply_text(
+            f"✅ *Entrenamiento completo*\n\n"
+            f"🎯 Test accuracy: `{data.get('test_accuracy')}%`\n"
+            f"🏆 Best train acc: `{data.get('best_train_acc')}%`\n"
+            f"📊 Train samples: `{data.get('train_samples')}`\n"
+            f"🧪 Test samples: `{data.get('test_samples')}`\n"
+            f"🔁 Épocas: `{data.get('epochs')}`",
+            parse_mode="Markdown"
+        )
+
+    except requests.exceptions.Timeout:
+        await update.message.reply_text(
+            "⚠️ El entrenamiento está tomando más de lo esperado.\n"
+            "Intenta /status para ver si el modelo ya está listo."
+        )
+    except Exception as e:
+        await update.message.reply_text(f"❌ Error: {str(e)}")
 
 def main():
 
@@ -437,6 +474,7 @@ def main():
         ("hardexamples", hard_examples),
         ("benchmark", benchmark),
         ("complexity", complexity),
+        ("train_complexity", train_complexity), 
         ("analize", analize)
 
     ]

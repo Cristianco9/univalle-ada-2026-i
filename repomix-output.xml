@@ -1,0 +1,2478 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+mlp-telegram-project/
+  algorithms/
+    __init__.py
+    hard_mining.py
+    quickselect.py
+    top_k.py
+  api/
+    app.py
+  bot/
+    telegram_bot.py
+  data/
+    __init__.py
+    load_dataset.py
+    simple_dataset.py
+  data_structures/
+    __init__.py
+    hash_table.py
+    queue.py
+  experiments/
+    benchmark.py
+    plot_benchmark.py
+    quickselect_benchmark.py
+  mlp/
+    __init__.py
+    activations.py
+    model_service.py
+    network.py
+    perceptron.py
+  tests/
+    __init__.py
+    numpy_lab.py
+    test_hard_minig.py
+    test_hash_table.py
+    test_mlp.py
+    test_perceptron.py
+    test_queue.py
+    test_quickselect.py
+  utils/
+    __init__.py
+    batch_loader.py
+    encoding.py
+  bot_token.txt
+  main.py
+  requirements.txt
+.gitignore
+LICENSE
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="mlp-telegram-project/algorithms/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/algorithms/hard_mining.py">
+import heapq
+
+
+def get_hard_examples(
+    losses,
+    k=5
+):
+
+    indexed_losses = [
+        (
+            loss,
+            index
+        )
+        for index,
+        loss
+        in enumerate(losses)
+    ]
+
+    hardest = (
+        heapq.nlargest(
+            k,
+            indexed_losses
+        )
+    )
+
+    return hardest
+</file>
+
+<file path="mlp-telegram-project/algorithms/quickselect.py">
+def partition(
+    arr,
+    low,
+    high
+):
+
+    pivot = arr[high]
+
+    i = low
+
+    for j in range(
+        low,
+        high
+    ):
+
+        if arr[j] <= pivot:
+
+            arr[i], arr[j] = (
+                arr[j],
+                arr[i]
+            )
+
+            i += 1
+
+    arr[i], arr[high] = (
+        arr[high],
+        arr[i]
+    )
+
+    return i
+
+
+def quickselect(
+    arr,
+    low,
+    high,
+    k
+):
+
+    if low == high:
+        return arr[low]
+
+    pivot_index = (
+        partition(
+            arr,
+            low,
+            high
+        )
+    )
+
+    if pivot_index == k:
+        return arr[k]
+
+    elif pivot_index > k:
+
+        return quickselect(
+            arr,
+            low,
+            pivot_index - 1,
+            k
+        )
+
+    else:
+
+        return quickselect(
+            arr,
+            pivot_index + 1,
+            high,
+            k
+        )
+
+
+def find_median(
+    arr
+):
+
+    copied = arr.copy()
+
+    n = len(copied)
+
+    median_index = n // 2
+
+    return quickselect(
+        copied,
+        0,
+        n - 1,
+        median_index
+    )
+</file>
+
+<file path="mlp-telegram-project/algorithms/top_k.py">
+import heapq
+
+
+def top_k_heap(
+    values,
+    k
+):
+
+    return heapq.nlargest(
+        k,
+        values
+    )
+
+
+def top_k_sort(
+    values,
+    k
+):
+
+    sorted_values = sorted(
+        values,
+        reverse=True
+    )
+
+    return sorted_values[:k]
+</file>
+
+<file path="mlp-telegram-project/data/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/data/load_dataset.py">
+from sklearn.datasets import load_iris
+from sklearn.model_selection import (
+    train_test_split
+)
+
+import numpy as np
+
+
+def get_iris_dataset():
+
+    iris = load_iris()
+
+    X = iris.data
+    y = iris.target
+
+    X_train, X_test, y_train, y_test = (
+        train_test_split(
+            X,
+            y,
+            test_size=0.2,
+            random_state=42
+        )
+    )
+
+    return (
+        X_train,
+        X_test,
+        y_train,
+        y_test
+    )
+
+
+if __name__ == "__main__":
+
+    (
+        X_train,
+        X_test,
+        y_train,
+        y_test
+    ) = get_iris_dataset()
+
+    print(
+        f"Train shape: {X_train.shape}"
+    )
+
+    print(
+        f"Test shape: {X_test.shape}"
+    )
+</file>
+
+<file path="mlp-telegram-project/data/simple_dataset.py">
+import numpy as np
+
+
+def get_simple_dataset():
+
+    X = np.array([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1]
+    ])
+
+    y = np.array([
+        0,
+        0,
+        0,
+        1
+    ])
+
+    return X, y
+
+
+if __name__ == "__main__":
+
+    X, y = get_simple_dataset()
+
+    print(X)
+    print(y)
+</file>
+
+<file path="mlp-telegram-project/data_structures/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/data_structures/hash_table.py">
+class HashTable:
+
+    def __init__(
+        self,
+        size=100
+    ):
+
+        self.size = size
+
+        self.table = [
+            []
+            for _ in range(size)
+        ]
+
+    def _hash(
+        self,
+        key
+    ):
+
+        return (
+            hash(key)
+            % self.size
+        )
+
+    def set(
+        self,
+        key,
+        value
+    ):
+
+        index = self._hash(
+            key
+        )
+
+        for pair in (
+            self.table[index]
+        ):
+
+            if (
+                pair[0]
+                == key
+            ):
+
+                pair[1] = value
+
+                return
+
+        self.table[
+            index
+        ].append(
+            [key, value]
+        )
+
+    def get(
+        self,
+        key
+    ):
+
+        index = self._hash(
+            key
+        )
+
+        for pair in (
+            self.table[index]
+        ):
+
+            if (
+                pair[0]
+                == key
+            ):
+
+                return pair[1]
+
+        return None
+</file>
+
+<file path="mlp-telegram-project/data_structures/queue.py">
+class Queue:
+
+    def __init__(self):
+
+        self.items = []
+
+    def enqueue(
+        self,
+        item
+    ):
+
+        self.items.append(
+            item
+        )
+
+    def dequeue(
+        self
+    ):
+
+        if not self.is_empty():
+
+            return (
+                self.items.pop(0)
+            )
+
+        return None
+
+    def is_empty(
+        self
+    ):
+
+        return (
+            len(self.items)
+            == 0
+        )
+
+    def size(
+        self
+    ):
+
+        return len(
+            self.items
+        )
+</file>
+
+<file path="mlp-telegram-project/experiments/benchmark.py">
+import random
+import time
+
+from algorithms.top_k import (
+    top_k_heap,
+    top_k_sort
+)
+
+
+def benchmark_top_k():
+
+    sizes = [
+        1000,
+        5000,
+        10000,
+        50000,
+        100000
+    ]
+
+    k = 10
+
+    results = []
+
+    for n in sizes:
+
+        data = [
+            random.randint(
+                1,
+                100000
+            )
+            for _ in range(n)
+        ]
+
+        start = (
+            time.perf_counter()
+        )
+
+        top_k_heap(
+            data,
+            k
+        )
+
+        heap_time = (
+            time.perf_counter()
+            - start
+        )
+
+        start = (
+            time.perf_counter()
+        )
+
+        top_k_sort(
+            data,
+            k
+        )
+
+        sort_time = (
+            time.perf_counter()
+            - start
+        )
+
+        results.append({
+            "n": n,
+            "heap_time":
+            heap_time,
+
+            "sort_time":
+            sort_time
+        })
+
+    return results
+
+
+if __name__ == "__main__":
+
+    results = (
+        benchmark_top_k()
+    )
+
+    for r in results:
+
+        print(
+            f"N={r['n']} | "
+            f"Heap="
+            f"{r['heap_time']:.6f}s | "
+            f"Sort="
+            f"{r['sort_time']:.6f}s"
+        )
+</file>
+
+<file path="mlp-telegram-project/experiments/plot_benchmark.py">
+import matplotlib.pyplot as plt
+
+from experiments.benchmark import (
+    benchmark_top_k
+)
+
+
+results = benchmark_top_k()
+
+sizes = [
+    r["n"]
+    for r in results
+]
+
+heap_times = [
+    r["heap_time"]
+    for r in results
+]
+
+sort_times = [
+    r["sort_time"]
+    for r in results
+]
+
+plt.figure(
+    figsize=(10, 5)
+)
+
+plt.plot(
+    sizes,
+    heap_times,
+    label="Heap Top-K"
+)
+
+plt.plot(
+    sizes,
+    sort_times,
+    label="Sort Top-K"
+)
+
+plt.xlabel(
+    "Input Size (n)"
+)
+
+plt.ylabel(
+    "Execution Time"
+)
+
+plt.title(
+    "Heap vs Sort Top-K"
+)
+
+plt.legend()
+
+plt.grid(True)
+
+plt.show()
+</file>
+
+<file path="mlp-telegram-project/experiments/quickselect_benchmark.py">
+import random
+import time
+
+from algorithms.quickselect import (
+    find_median
+)
+
+
+def benchmark():
+
+    sizes = [
+        1000,
+        5000,
+        10000,
+        50000,
+        100000
+    ]
+
+    for n in sizes:
+
+        data = [
+            random.randint(
+                1,
+                100000
+            )
+            for _ in range(n)
+        ]
+
+        start = (
+            time.perf_counter()
+        )
+
+        median_qs = (
+            find_median(
+                data
+            )
+        )
+
+        quick_time = (
+            time.perf_counter()
+            - start
+        )
+
+        start = (
+            time.perf_counter()
+        )
+
+        sorted_data = (
+            sorted(data)
+        )
+
+        median_sort = (
+            sorted_data[
+                len(data)//2
+            ]
+        )
+
+        sort_time = (
+            time.perf_counter()
+            - start
+        )
+
+        print(
+            f"N={n} | "
+            f"Quickselect="
+            f"{quick_time:.6f}s | "
+            f"Sort="
+            f"{sort_time:.6f}s"
+        )
+
+
+if __name__ == "__main__":
+    benchmark()
+</file>
+
+<file path="mlp-telegram-project/mlp/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/mlp/activations.py">
+import numpy as np
+
+
+def relu(x):
+    return np.maximum(0, x)
+
+
+def softmax(x):
+
+    exp_values = np.exp(
+        x - np.max(x)
+    )
+
+    return (
+        exp_values
+        / np.sum(exp_values)
+    )
+</file>
+
+<file path="mlp-telegram-project/tests/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/tests/numpy_lab.py">
+import numpy as np
+
+
+# vector
+x = np.array([1, 2, 3])
+
+print("Vector:")
+print(x)
+
+# matrix
+W = np.array([
+    [1, 2],
+    [3, 4],
+    [5, 6]
+])
+
+print("\nMatrix:")
+print(W)
+
+# dot product
+result = np.dot(x, W)
+
+print("\nDot product:")
+print(result)
+
+# transpose
+print("\nTranspose:")
+print(W.T)
+
+# random weights
+weights = np.random.randn(
+    4,
+    3
+)
+
+print("\nRandom weights:")
+print(weights)
+</file>
+
+<file path="mlp-telegram-project/tests/test_hard_minig.py">
+from algorithms.hard_mining import (
+    get_hard_examples
+)
+
+losses = [
+    0.2,
+    0.9,
+    0.1,
+    0.7,
+    0.95,
+    0.5
+]
+
+hard_examples = (
+    get_hard_examples(
+        losses,
+        k=3
+    )
+)
+
+print(
+    hard_examples
+)
+</file>
+
+<file path="mlp-telegram-project/tests/test_hash_table.py">
+from data_structures.hash_table import (
+    HashTable
+)
+
+
+metrics = (
+    HashTable()
+)
+
+metrics.set(
+    "epoch_1_loss",
+    0.81
+)
+
+metrics.set(
+    "epoch_2_loss",
+    0.54
+)
+
+print(
+    metrics.get(
+        "epoch_1_loss"
+    )
+)
+
+print(
+    metrics.get(
+        "epoch_2_loss"
+    )
+)
+</file>
+
+<file path="mlp-telegram-project/tests/test_queue.py">
+from data_structures.queue import (
+    Queue
+)
+
+
+queue = Queue()
+
+queue.enqueue(10)
+queue.enqueue(20)
+queue.enqueue(30)
+
+print(
+    queue.dequeue()
+)
+
+print(
+    queue.dequeue()
+)
+
+print(
+    queue.size()
+)
+</file>
+
+<file path="mlp-telegram-project/tests/test_quickselect.py">
+from algorithms.quickselect import (
+    find_median
+)
+
+
+numbers = [
+    9,
+    1,
+    7,
+    2,
+    10,
+    4,
+    5
+]
+
+median = (
+    find_median(
+        numbers
+    )
+)
+
+print(
+    f"Median: "
+    f"{median}"
+)
+</file>
+
+<file path="mlp-telegram-project/utils/__init__.py">
+
+</file>
+
+<file path="mlp-telegram-project/utils/batch_loader.py">
+from data_structures.queue import (
+    Queue
+)
+
+
+def create_batches(
+    X,
+    y,
+    batch_size=16
+):
+
+    queue = Queue()
+
+    for i in range(
+        0,
+        len(X),
+        batch_size
+    ):
+
+        X_batch = X[
+            i:i + batch_size
+        ]
+
+        y_batch = y[
+            i:i + batch_size
+        ]
+
+        queue.enqueue(
+            (
+                X_batch,
+                y_batch
+            )
+        )
+
+    return queue
+</file>
+
+<file path="mlp-telegram-project/utils/encoding.py">
+import numpy as np
+
+
+def one_hot_encode(
+    y,
+    num_classes
+):
+
+    encoded = np.zeros(
+        (
+            len(y),
+            num_classes
+        )
+    )
+
+    encoded[
+        np.arange(len(y)),
+        y
+    ] = 1
+
+    return encoded
+</file>
+
+<file path="mlp-telegram-project/bot_token.txt">
+Done! Congratulations on your new bot. You will find it at 
+t.me/mlp_algorithm_analysis_bot. You can now add a description, 
+about section and profile picture for your bot, see /help for a list of commands. 
+By the way, when you've finished creating your cool bot, ping our Bot Support if 
+you want a better username for it. Just make sure the bot is fully operational 
+before you do this.
+
+Use this token to access the HTTP API:
+8543103325:AAF_qSLlWhxWC6DFgTmC_exqiKl5ppKffro
+Keep your token secure and store it safely, it can be used by anyone to control your bot.
+
+For a description of the Bot API, see this page: https://core.telegram.org/bots/api
+</file>
+
+<file path="mlp-telegram-project/main.py">
+
+</file>
+
+<file path="LICENSE">
+MIT License
+
+Copyright (c) 2026 Cristian Camilo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path="mlp-telegram-project/mlp/model_service.py">
+from mlp.network import (
+    NeuralNetwork
+)
+
+from data.load_dataset import (
+    get_iris_dataset
+)
+
+from utils.encoding import (
+    one_hot_encode
+)
+
+from utils.batch_loader import (
+    create_batches
+)
+
+from data_structures.hash_table import (
+    HashTable
+)
+
+from algorithms.hard_mining import (
+    get_hard_examples
+)
+
+import numpy as np
+
+
+class ModelService:
+
+    def __init__(self):
+
+        self.model = None
+
+        self.is_trained = False
+
+        self.accuracy = 0
+
+        self.metrics = (
+            HashTable()
+        )
+
+        self.hard_examples = []
+
+    def train_model(self):
+
+        (
+            X_train,
+            X_test,
+            y_train,
+            y_test
+        ) = get_iris_dataset()
+
+        y_train_encoded = (
+            one_hot_encode(
+                y_train,
+                3
+            )
+        )
+
+        self.model = (
+            NeuralNetwork(
+                input_size=4,
+                hidden_size=8,
+                output_size=3,
+                learning_rate=0.01
+            )
+        )
+
+        batches = (
+            create_batches(
+                X_train,
+                y_train_encoded,
+                batch_size=16
+            )
+        )
+
+        losses = []
+
+        epochs = 50
+
+        for epoch in range(
+            epochs
+        ):
+
+            correct = 0
+
+            while (
+                not batches.is_empty()
+            ):
+
+                (
+                    X_batch,
+                    y_batch
+                ) = (
+                    batches.dequeue()
+                )
+
+                for i in range(
+                    len(X_batch)
+                ):
+
+                    output = (
+                        self.model.forward(
+                            X_batch[i]
+                        )
+                    )
+
+                    prediction = (
+                        np.argmax(
+                            output
+                        )
+                    )
+
+                    real_class = (
+                        np.argmax(
+                            y_batch[i]
+                        )
+                    )
+
+                    if (
+                        prediction
+                        == real_class
+                    ):
+                        correct += 1
+
+                    loss = np.mean(
+                        (
+                            output
+                            - y_batch[i]
+                        ) ** 2
+                    )
+
+                    losses.append(
+                        loss
+                    )
+
+            accuracy = (
+                correct
+                / len(X_train)
+            ) * 100
+
+            self.metrics.set(
+                f"epoch_{epoch+1}",
+                round(
+                    accuracy,
+                    2
+                )
+            )
+
+            print(
+                f"Epoch "
+                f"{epoch+1}"
+                f"/{epochs}"
+                f" Accuracy: "
+                f"{accuracy:.2f}%"
+            )
+
+            batches = (
+                create_batches(
+                    X_train,
+                    y_train_encoded,
+                    batch_size=16
+                )
+            )
+
+        hardest = (
+            get_hard_examples(
+                losses,
+                k=5
+            )
+        )
+
+        self.hard_examples = (
+            hardest
+        )
+
+        correct = 0
+
+        for i in range(
+            len(X_test)
+        ):
+
+            prediction = (
+                self.model.predict(
+                    X_test[i]
+                )
+            )
+
+            if (
+                prediction
+                == y_test[i]
+            ):
+                correct += 1
+
+        self.accuracy = (
+            correct
+            / len(X_test)
+        ) * 100
+
+        self.is_trained = True
+
+        return {
+            "status":
+            "trained",
+
+            "accuracy":
+            round(
+                self.accuracy,
+                2
+            )
+        }
+
+    def get_metrics(
+        self
+    ):
+
+        metrics = {}
+
+        for i in range(
+            1,
+            51
+        ):
+
+            key = (
+                f"epoch_{i}"
+            )
+
+            metrics[key] = (
+                self.metrics.get(
+                    key
+                )
+            )
+
+        return metrics
+
+    def get_hard_examples(
+        self
+    ):
+
+        return (
+            self.hard_examples
+        )
+
+    def predict(
+        self,
+        features
+    ):
+
+        if (
+            not self.is_trained
+        ):
+
+            raise Exception(
+                "Model not trained"
+            )
+
+        prediction = (
+            self.model.predict(
+                np.array(
+                    features
+                )
+            )
+        )
+
+        flower_map = {
+            0: "Setosa",
+            1: "Versicolor",
+            2: "Virginica"
+        }
+
+        return {
+            "prediction":
+            flower_map[
+                prediction
+            ]
+        }
+
+
+model_service = (
+    ModelService()
+)
+</file>
+
+<file path="mlp-telegram-project/mlp/network.py">
+import numpy as np
+
+from mlp.activations import (
+    relu,
+    softmax
+)
+
+
+class NeuralNetwork:
+
+    def __init__(
+        self,
+        input_size,
+        hidden_size,
+        output_size,
+        learning_rate=0.01
+    ):
+
+        self.learning_rate = (
+            learning_rate
+        )
+
+        self.weights_input_hidden = (
+            np.random.randn(
+                input_size,
+                hidden_size
+            ) * 0.01
+        )
+
+        self.bias_hidden = (
+            np.zeros(
+                hidden_size
+            )
+        )
+
+        self.weights_hidden_output = (
+            np.random.randn(
+                hidden_size,
+                output_size
+            ) * 0.01
+        )
+
+        self.bias_output = (
+            np.zeros(
+                output_size
+            )
+        )
+
+    def forward(
+        self,
+        X
+    ):
+
+        self.hidden_input = (
+            np.dot(
+                X,
+                self.weights_input_hidden
+            )
+            + self.bias_hidden
+        )
+
+        self.hidden_output = (
+            relu(
+                self.hidden_input
+            )
+        )
+
+        self.final_input = (
+            np.dot(
+                self.hidden_output,
+                self.weights_hidden_output
+            )
+            + self.bias_output
+        )
+
+        self.final_output = (
+            softmax(
+                self.final_input
+            )
+        )
+
+        return (
+            self.final_output
+        )
+
+    def train(
+        self,
+        X,
+        y,
+        epochs=100
+    ):
+
+        for epoch in range(
+            epochs
+        ):
+
+            correct = 0
+
+            for i in range(
+                len(X)
+            ):
+
+                x_sample = X[i]
+
+                y_sample = y[i]
+
+                output = (
+                    self.forward(
+                        x_sample
+                    )
+                )
+
+                prediction = (
+                    np.argmax(
+                        output
+                    )
+                )
+
+                real_class = (
+                    np.argmax(
+                        y_sample
+                    )
+                )
+
+                if (
+                    prediction
+                    == real_class
+                ):
+                    correct += 1
+
+                output_error = (
+                    output
+                    - y_sample
+                )
+
+                hidden_error = (
+                    np.dot(
+                        output_error,
+                        self.weights_hidden_output.T
+                    )
+                )
+
+                hidden_gradient = (
+                    hidden_error
+                    * (
+                        self.hidden_input
+                        > 0
+                    )
+                )
+
+                self.weights_hidden_output -= (
+                    self.learning_rate
+                    * np.outer(
+                        self.hidden_output,
+                        output_error
+                    )
+                )
+
+                self.bias_output -= (
+                    self.learning_rate
+                    * output_error
+                )
+
+                self.weights_input_hidden -= (
+                    self.learning_rate
+                    * np.outer(
+                        x_sample,
+                        hidden_gradient
+                    )
+                )
+
+                self.bias_hidden -= (
+                    self.learning_rate
+                    * hidden_gradient
+                )
+
+            accuracy = (
+                correct
+                / len(X)
+            ) * 100
+
+            print(
+                f"Epoch "
+                f"{epoch + 1}"
+                f"/{epochs}"
+                f" | Accuracy: "
+                f"{accuracy:.2f}%"
+            )
+
+    def predict(
+        self,
+        X
+    ):
+
+        probabilities = (
+            self.forward(X)
+        )
+
+        return np.argmax(
+            probabilities
+        )
+</file>
+
+<file path="mlp-telegram-project/mlp/perceptron.py">
+import numpy as np
+
+
+class Perceptron:
+
+    def __init__(
+        self,
+        input_size,
+        learning_rate=0.1,
+        epochs=100
+    ):
+
+        self.learning_rate = (
+            learning_rate
+        )
+
+        self.epochs = epochs
+
+        self.weights = (
+            np.random.randn(
+                input_size
+            )
+        )
+
+        self.bias = np.random.randn()
+
+    def activation_function(
+        self,
+        x
+    ):
+        return (
+            1 if x >= 0 else 0
+        )
+
+    def predict(
+        self,
+        x
+    ):
+
+        linear_output = (
+            np.dot(
+                x,
+                self.weights
+            )
+            + self.bias
+        )
+
+        return self.activation_function(
+            linear_output
+        )
+
+    def train(
+        self,
+        X,
+        y
+    ):
+
+        for epoch in range(
+            self.epochs
+        ):
+
+            total_error = 0
+
+            for i in range(
+                len(X)
+            ):
+
+                prediction = (
+                    self.predict(
+                        X[i]
+                    )
+                )
+
+                error = (
+                    y[i]
+                    - prediction
+                )
+
+                total_error += (
+                    abs(error)
+                )
+
+                self.weights += (
+                    self.learning_rate
+                    * error
+                    * X[i]
+                )
+
+                self.bias += (
+                    self.learning_rate
+                    * error
+                )
+
+            print(
+                f"Epoch "
+                f"{epoch + 1}"
+                f"/{self.epochs}"
+                f" | Error: "
+                f"{total_error}"
+            )
+</file>
+
+<file path="mlp-telegram-project/tests/test_mlp.py">
+from mlp.network import (
+    NeuralNetwork
+)
+
+from data.load_dataset import (
+    get_iris_dataset
+)
+
+from utils.encoding import (
+    one_hot_encode
+)
+
+import numpy as np
+
+
+(
+    X_train,
+    X_test,
+    y_train,
+    y_test
+) = get_iris_dataset()
+
+
+y_train_encoded = (
+    one_hot_encode(
+        y_train,
+        3
+    )
+)
+
+model = NeuralNetwork(
+    input_size=4,
+    hidden_size=8,
+    output_size=3,
+    learning_rate=0.001
+)
+
+model.train(
+    X_train,
+    y_train_encoded,
+    epochs=100
+)
+
+correct = 0
+
+for i in range(
+    len(X_test)
+):
+
+    prediction = (
+        model.predict(
+            X_test[i]
+        )
+    )
+
+    if (
+        prediction
+        == y_test[i]
+    ):
+        correct += 1
+
+
+accuracy = (
+    correct
+    / len(X_test)
+) * 100
+
+print(
+    f"\nTest Accuracy: "
+    f"{accuracy:.2f}%"
+)
+</file>
+
+<file path="mlp-telegram-project/tests/test_perceptron.py">
+from mlp.perceptron import (
+    Perceptron
+)
+
+from data.simple_dataset import (
+    get_simple_dataset
+)
+
+
+X, y = get_simple_dataset()
+
+model = Perceptron(
+    input_size=2,
+    learning_rate=0.1,
+    epochs=20
+)
+
+model.train(
+    X,
+    y
+)
+
+print("\nPredictions:")
+
+for sample in X:
+
+    prediction = (
+        model.predict(
+            sample
+        )
+    )
+
+    print(
+        f"{sample} -> "
+        f"{prediction}"
+    )
+</file>
+
+<file path="mlp-telegram-project/bot/telegram_bot.py">
+import os
+import requests
+
+from dotenv import load_dotenv
+
+from telegram import Update
+
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes
+)
+
+load_dotenv()
+
+TOKEN = os.getenv(
+    "TELEGRAM_BOT_TOKEN"
+)
+
+API_URL = os.getenv(
+    "API_URL"
+)
+
+
+async def start(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    await (
+        update.message.reply_text(
+            "MLP Algorithm "
+            "System initialized."
+        )
+    )
+
+
+async def help_command(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    await (
+        update.message.reply_text(
+            """
+Available commands:
+
+/train
+/status
+/predict
+/metrics
+/hardexamples
+/benchmark
+/complexity
+/help
+"""
+        )
+    )
+
+
+async def train(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    await (
+        update.message.reply_text(
+            "Training started..."
+        )
+    )
+
+    response = requests.post(
+        f"{API_URL}/train"
+    )
+
+    data = response.json()
+
+    await (
+        update.message.reply_text(
+            f"Training completed\n\n"
+            f"Accuracy: "
+            f"{data['accuracy']}%"
+        )
+    )
+
+
+async def status(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/status"
+    )
+
+    data = response.json()
+
+    await (
+        update.message.reply_text(
+            f"System Status\n\n"
+            f"Model: "
+            f"{data['mlp_model']}\n"
+            f"Accuracy: "
+            f"{data['accuracy']}"
+        )
+    )
+
+
+async def predict(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    try:
+
+        values = list(
+            map(
+                float,
+                context.args
+            )
+        )
+
+        if len(values) != 4:
+
+            await (
+                update.message.reply_text(
+                    "Use:\n"
+                    "/predict "
+                    "5.1 3.5 "
+                    "1.4 0.2"
+                )
+            )
+
+            return
+
+        response = requests.get(
+            f"{API_URL}/predict",
+            params={
+                "sepal_length":
+                values[0],
+
+                "sepal_width":
+                values[1],
+
+                "petal_length":
+                values[2],
+
+                "petal_width":
+                values[3]
+            }
+        )
+
+        data = (
+            response.json()
+        )
+
+        await (
+            update.message.reply_text(
+                f"Prediction:\n"
+                f"{data['prediction']}"
+            )
+        )
+
+    except Exception:
+
+        await (
+            update.message.reply_text(
+                "Invalid input."
+            )
+        )
+
+
+async def metrics(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/metrics"
+    )
+
+    data = response.json()
+
+    text = (
+        "Training Metrics\n\n"
+    )
+
+    for key, value in (
+        data.items()
+    ):
+
+        if value is not None:
+
+            text += (
+                f"{key}: "
+                f"{value}%\n"
+            )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def hard_examples(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/hard-examples"
+    )
+
+    data = response.json()
+
+    text = (
+        "Hard Examples\n\n"
+    )
+
+    for loss, idx in (
+        data[
+            "hard_examples"
+        ]
+    ):
+
+        text += (
+            f"Sample {idx}"
+            f" → loss "
+            f"{loss:.4f}\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def benchmark(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/benchmark"
+    )
+
+    data = response.json()
+
+    text = (
+        "Benchmark Results\n\n"
+    )
+
+    for item in (
+        data[
+            "benchmark"
+        ]
+    ):
+
+        text += (
+            f"N={item['n']}\n"
+            f"Heap: "
+            f"{item['heap_time']:.6f}s\n"
+            f"Sort: "
+            f"{item['sort_time']:.6f}s\n\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+async def complexity(
+    update: Update,
+    context:
+    ContextTypes.DEFAULT_TYPE
+):
+
+    response = requests.get(
+        f"{API_URL}/complexity"
+    )
+
+    data = response.json()
+
+    text = (
+        "Algorithm Complexity\n\n"
+    )
+
+    for key, value in (
+        data.items()
+    ):
+
+        text += (
+            f"{key} "
+            f"→ {value}\n"
+        )
+
+    await (
+        update.message.reply_text(
+            text
+        )
+    )
+
+
+def main():
+
+    app = (
+        ApplicationBuilder()
+        .token(TOKEN)
+        .build()
+    )
+
+    commands = [
+        ("start", start),
+        ("help", help_command),
+        ("train", train),
+        ("status", status),
+        ("predict", predict),
+        ("metrics", metrics),
+        ("hardexamples", hard_examples),
+        ("benchmark", benchmark),
+        ("complexity", complexity)
+    ]
+
+    for name, fn in commands:
+
+        app.add_handler(
+            CommandHandler(
+                name,
+                fn
+            )
+        )
+
+    print(
+        "Bot running..."
+    )
+
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
+</file>
+
+<file path="mlp-telegram-project/requirements.txt">
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+certifi==2026.5.20
+charset-normalizer==3.4.7
+click==8.4.0
+contourpy==1.3.3
+cycler==0.12.1
+fastapi==0.136.1
+fonttools==4.63.0
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.15
+iniconfig==2.3.0
+joblib==1.5.3
+kiwisolver==1.5.0
+matplotlib==3.10.9
+numpy==2.4.6
+packaging==26.2
+pandas==3.0.3
+pillow==12.2.0
+pluggy==1.6.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+Pygments==2.20.0
+pyparsing==3.3.2
+pytest==9.0.3
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-telegram-bot==22.7
+requests==2.34.2
+scikit-learn==1.8.0
+scipy==1.17.1
+six==1.17.0
+starlette==1.0.1
+threadpoolctl==3.6.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.7.0
+uvicorn==0.47.0
+</file>
+
+<file path="mlp-telegram-project/api/app.py">
+from fastapi import (
+    FastAPI
+)
+
+from mlp.model_service import (
+    model_service
+)
+
+app = FastAPI(
+    title="MLP Algorithm API"
+)
+
+
+@app.get("/")
+def root():
+
+    return {
+        "message":
+        "API running"
+    }
+
+
+@app.get("/status")
+def status():
+
+    return {
+        "status":
+        "online",
+
+        "mlp_model":
+        (
+            "trained"
+            if model_service.is_trained
+            else
+            "not_trained"
+        ),
+
+        "accuracy":
+        model_service.accuracy
+    }
+
+
+@app.post("/train")
+def train():
+
+    result = (
+        model_service
+        .train_model()
+    )
+
+    return result
+
+
+@app.get("/predict")
+def predict(
+    sepal_length: float,
+    sepal_width: float,
+    petal_length: float,
+    petal_width: float
+):
+
+    prediction = (
+        model_service.predict(
+            [
+                sepal_length,
+                sepal_width,
+                petal_length,
+                petal_width
+            ]
+        )
+    )
+
+    return prediction
+
+@app.get("/metrics")
+def metrics():
+
+    return (
+        model_service
+        .get_metrics()
+    )
+
+
+@app.get("/hard-examples")
+def hard_examples():
+
+    return {
+        "hard_examples":
+        (
+            model_service
+            .get_hard_examples()
+        )
+    }
+
+@app.get("/benchmark")
+def benchmark():
+
+    from experiments.benchmark import (
+        benchmark_top_k
+    )
+
+    return {
+        "benchmark":
+        benchmark_top_k()
+    }
+
+
+@app.get("/complexity")
+def complexity():
+
+    return {
+        "top_k_heap":
+        "O(n log k)",
+
+        "top_k_sort":
+        "O(n log n)",
+
+        "quickselect_average":
+        "O(n)",
+
+        "hash_table":
+        "O(1)",
+
+        "queue":
+        "O(1)"
+    }
+</file>
+
+<file path=".gitignore">
+# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,python
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,python
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### macOS Patch ###
+# iCloud generated files
+*.icloud
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+### Python Patch ###
+# Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
+poetry.toml
+
+# ruff
+.ruff_cache/
+
+# LSP config files
+pyrightconfig.json
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,python
+</file>
+
+<file path="README.md">
+**Autor:** Cristian Camilo Cortes Ortiz
+
+**Código:** 202478542
+
+**Universidad del Valle**  
+
+**Programa:** Tecnología en Desarrollo de Software
+
+**Asignatura:** Análisis y Diseño de Algoritmos
+
+**Profesor:** Daniel Quintero Capera  
+
+**Fecha:** 21 Mayo 2026
+</file>
+
+</files>
