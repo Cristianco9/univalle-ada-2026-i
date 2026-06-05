@@ -30,13 +30,13 @@ HIDDEN1        = 64
 HIDDEN2        = 32
 LEARNING_RATE  = 0.01
 LR_DECAY       = 0.5
-LR_DECAY_EVERY = 100
+LR_DECAY_EVERY = 150
 MOMENTUM       = 0.9
 EPOCHS         = 500
-PATIENCE       = 50
+PATIENCE       = 80
 BATCH_SIZE     = 8
 CLIP_VALUE     = 1.0
-NOISE_STD      = 0.01
+NOISE_STD      = 0.02
 
 
 def relu(x):
