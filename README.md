@@ -21,7 +21,7 @@
 ## Descripción del Proyecto
 
 Este proyecto implementa un **Perceptrón Multicapa (MLP) desde cero** usando 
-únicamente NumPy, capaz de clasificar la complejidad algorítmica de fragmentos 
+únicamente NumPy, capaz de clasificar la complejidad algorítmica de
 de código Python enviados a través de un **bot de Telegram**.
 
 El sistema recibe un algoritmo como entrada y responde con su notación Big-O 
@@ -60,22 +60,31 @@ Código Python
       ↓
 Feature Extractor (AST) → vector[12]
       ↓
-MLP: input(12) → hidden1(64, ReLU) → hidden2(32, ReLU) → output(7, Softmax)
+MLP: input(12) → hidden1(64, ReLU) → hidden2(32, ReLU) →
+     output(7, Softmax)
       ↓
-Clase de complejidad + probabilidades Top-3
+Clase de complejidad + probabilidades Top-3 + gráfica PNG
 ```
 
 ### Módulos implementados
 
 El proyecto implementa y analiza algorítmicamente los siguientes módulos:
 
-- **MLP desde cero** — forward pass, backpropagation, SGD con momentum, gradient clipping, early stopping y learning rate decay
-- **Feature Extractor** — análisis de AST para extraer 12 features numéricas del código
-- **Dataset** — 142 snippets etiquetados y balanceados con augmentation gaussiana
-- **Hard Mining** — selección de ejemplos difíciles con heap (`heapq.nlargest`) → O(n log k)
-- **Quickselect** — cálculo de mediana en O(n) promedio vs O(n log n) con sort
+- **MLP desde cero** — forward pass, backpropagation, SGD con momentum,
+  gradient clipping, early stopping y learning rate decay
+- **Feature Extractor** — análisis de AST para extraer 12 features
+  numéricas del código
+- **Complexity Plotter** — generación de gráficas de complejidad espacio-
+  temporal con Matplotlib, retornadas como imagen PNG
+- **Dataset** — 142 snippets etiquetados y balanceados con augmentation
+  gaussiana
+- **Hard Mining** — selección de ejemplos difíciles con heap
+  (`heapq.nlargest`) → O(n log k)
+- **Quickselect** — cálculo de mediana en O(n) promedio vs O(n log n)
+  con sort
 - **Top-K** — comparativa heap vs sort para selección de k mejores pérdidas
-- **Cola de lotes** — procesamiento de batches con estructura Queue → O(1) enqueue/dequeue
+- **Cola de lotes** — procesamiento de batches con estructura Queue →
+  O(1) enqueue/dequeue
 - **HashTable** — almacenamiento de métricas por época → O(1) amortizado
 
 ---
@@ -85,24 +94,25 @@ El proyecto implementa y analiza algorítmicamente los siguientes módulos:
 ```
 mlp-telegram-project/
   algorithms/
-    hard_mining.py          ← Top-k con heap (RA2)
-    quickselect.py          ← Mediana en O(n) (RA2)
-    top_k.py                ← Heap vs Sort benchmark (RA2)
+    hard_mining.py             ← Top-k con heap (RA2)
+    quickselect.py             ← Mediana en O(n) (RA2)
+    top_k.py                   ← Heap vs Sort benchmark (RA2)
   api/
-    app.py                  ← API REST con FastAPI
+    app.py                     ← API REST con FastAPI
   bot/
-    telegram_bot.py         ← Bot de Telegram
+    telegram_bot.py            ← Bot de Telegram
   complexity/
-    feature_extractor.py    ← AST → vector de features
+    feature_extractor.py       ← AST → vector de features
+    complexity_plotter.py      ← Generador de gráficas PNG
   data/
-    complexity_dataset.py   ← 142 snippets etiquetados
+    complexity_dataset.py      ← 142 snippets etiquetados
   data_structures/
-    hash_table.py           ← HashTable para métricas (RA3)
-    queue.py                ← Cola de lotes (RA3)
+    hash_table.py              ← HashTable para métricas (RA3)
+    queue.py                   ← Cola de lotes (RA3)
   experiments/
-    benchmark.py            ← Benchmark Top-K
-    quickselect_benchmark.py← Benchmark Quickselect
-    plot_benchmark.py       ← Gráficas de escalado
+    benchmark.py               ← Benchmark Top-K
+    quickselect_benchmark.py   ← Benchmark Quickselect
+    plot_benchmark.py          ← Gráficas de escalado
   mlp/
     complexity_model_service.py ← MLP clasificador principal
   tests/
@@ -111,9 +121,9 @@ mlp-telegram-project/
     test_queue.py
     test_quickselect.py
   utils/
-    batch_loader.py         ← Crea batches con Queue
-    encoding.py             ← One-hot encoding
-  .env                      ← Variables de entorno (no subir a git)
+    batch_loader.py            ← Crea batches con Queue
+    encoding.py                ← One-hot encoding
+  .env                         ← Variables de entorno (no subir a git)
   requirements.txt
   README.md
 ```
@@ -167,8 +177,9 @@ TELEGRAM_BOT_TOKEN=tu_token_de_telegram
 API_URL=http://localhost:8000
 ```
 
-> Para obtener un token de Telegram, habla con [@BotFather](https://t.me/BotFather) 
-> en Telegram y crea un nuevo bot con `/newbot`.
+> Para obtener un token de Telegram, habla con
+> [@BotFather](https://t.me/BotFather) en Telegram y crea un nuevo bot
+> con `/newbot`.
 
 ---
 
@@ -232,8 +243,8 @@ curl http://localhost:8000/status
 ---
 
 ### `POST /train_complexity`
-Entrena el MLP con el dataset de snippets de código. Debe ejecutarse al menos 
-una vez antes de usar `/analize`.
+Entrena el MLP con el dataset de snippets de código. Debe ejecutarse al
+menos una vez antes de usar `/analize`.
 
 ```bash
 curl -X POST http://localhost:8000/train_complexity
@@ -254,8 +265,8 @@ curl -X POST http://localhost:8000/train_complexity
 ---
 
 ### `POST /analize`
-Recibe un snippet de código Python y retorna su complejidad algorítmica predicha 
-por el MLP.
+Recibe un snippet de código Python y retorna su complejidad algorítmica
+predicha por el MLP.
 
 ```bash
 curl -X POST http://localhost:8000/analize \
@@ -269,12 +280,37 @@ curl -X POST http://localhost:8000/analize \
   "complexity": "O(n²)",
   "confidence": 0.9823,
   "top3": [
-    {"complexity": "O(n²)",     "probability": 0.9823},
-    {"complexity": "O(n³)",     "probability": 0.0134},
-    {"complexity": "O(n log n)","probability": 0.0043}
+    {"complexity": "O(n²)",      "probability": 0.9823},
+    {"complexity": "O(n³)",      "probability": 0.0134},
+    {"complexity": "O(n log n)", "probability": 0.0043}
   ]
 }
 ```
+
+---
+
+### `GET /analize/plot`
+Retorna una imagen PNG con la gráfica de complejidad espacio-temporal
+del algoritmo analizado. El panel izquierdo muestra la curva destacada
+con su rango real de operaciones, y el panel derecho compara todas las
+complejidades resaltando la predicha.
+
+```bash
+curl "http://localhost:8000/analize/plot?complexity=O(n²)" \
+  --output grafica.png
+```
+
+**Parámetros:**
+
+| Parámetro | Tipo | Valores válidos |
+|-----------|------|-----------------|
+| `complexity` | string | `O(1)` `O(log n)` `O(n)` `O(n log n)` |
+| | | `O(n²)` `O(n³)` `O(2^n)` |
+
+**Respuesta:** imagen `image/png` (≈ 150 KB)
+
+> El bot de Telegram llama a este endpoint automáticamente después de
+> cada `/analize` y envía la imagen directamente en el chat.
 
 ---
 
@@ -297,7 +333,8 @@ curl http://localhost:8000/complexity_metrics
 ---
 
 ### `GET /hard-examples`
-Retorna los 5 ejemplos con mayor pérdida del entrenamiento (hard mining con heap).
+Retorna los 5 ejemplos con mayor pérdida del entrenamiento
+(hard mining con heap).
 
 ```bash
 curl http://localhost:8000/hard-examples
@@ -319,8 +356,8 @@ curl http://localhost:8000/hard-examples
 ---
 
 ### `GET /benchmark`
-Ejecuta el benchmark de Top-K comparando heap vs sort para diferentes tamaños 
-de entrada.
+Ejecuta el benchmark de Top-K comparando heap vs sort para diferentes
+tamaños de entrada.
 
 ```bash
 curl http://localhost:8000/benchmark
@@ -351,13 +388,13 @@ curl http://localhost:8000/complexity
 **Respuesta:**
 ```json
 {
-  "top_k_heap":          "O(n log k)",
-  "top_k_sort":          "O(n log n)",
-  "quickselect_average": "O(n)",
-  "hash_table":          "O(1)",
-  "queue":               "O(1)",
-  "mlp_forward":         "O(B * h * output)",
-  "mlp_backprop":        "O(B * h * output)"
+  "top_k_heap":           "O(n log k)",
+  "top_k_sort":           "O(n log n)",
+  "quickselect_average":  "O(n)",
+  "hash_table":           "O(1)",
+  "queue":                "O(1)",
+  "mlp_forward":          "O(B * h * output)",
+  "mlp_backprop":         "O(B * h * output)"
 }
 ```
 
@@ -370,7 +407,7 @@ curl http://localhost:8000/complexity
 | `/start` | Inicializa el bot |
 | `/help` | Muestra todos los comandos disponibles |
 | `/train_complexity` | Entrena el MLP clasificador |
-| `/analize <código>` | Clasifica la complejidad de un algoritmo |
+| `/analize <código>` | Clasifica la complejidad y muestra la gráfica |
 | `/status` | Estado actual del modelo |
 | `/complexity_metrics` | Resumen de accuracy y loss por época |
 | `/hardexamples` | Ejemplos más difíciles del entrenamiento |
@@ -382,17 +419,18 @@ curl http://localhost:8000/complexity
 ```
 /train_complexity
 ```
-> Entrena el MLP. Espera el mensaje de confirmación con el accuracy antes 
-de continuar.
+> Entrena el MLP. Espera el mensaje de confirmación con el accuracy
+> antes de continuar.
 
 ```
 /analize def fib(n):\n  if n<=1: return n\n  return fib(n-1)+fib(n-2)
 ```
-> Respuesta esperada: O(2^n) con alta certeza.
+> Respuesta esperada: mensaje con `O(2^n)` y alta certeza, seguido de
+> una imagen con la gráfica comparativa de complejidades.
 
-También puedes **pegar código directamente** como mensaje de texto sin usar el
-comando `/analize` — el bot lo detecta automáticamente si contiene palabras 
-clave como `def`, `for`, `while`, `return`.
+También puedes **pegar código directamente** como mensaje de texto sin
+usar el comando `/analize` — el bot lo detecta automáticamente si
+contiene palabras clave como `def`, `for`, `while`, `return`.
 
 ---
 
@@ -409,11 +447,14 @@ python3 tests/test_hard_mining.py
 
 ## Notas técnicas
 
-- El modelo se entrena **en memoria** — si reinicias la API debes ejecutar 
-`/train_complexity` nuevamente.
-- El entrenamiento usa **early stopping con patience=80** — para automáticamente 
-si no mejora en 80 épocas consecutivas.
-- El **learning rate** decae por un factor de 0.5 cada 150 épocas para afinar 
-la convergencia.
-- El dataset se **balancea automáticamente** con augmentation gaussiana 
-(ruido σ=0.02) para igualar la cantidad de muestras por clase.
+- El modelo se entrena **en memoria** — si reinicias la API debes
+  ejecutar `/train_complexity` nuevamente.
+- El entrenamiento usa **early stopping con patience=80** — para
+  automáticamente si no mejora en 80 épocas consecutivas.
+- El **learning rate** decae por un factor de 0.5 cada 150 épocas
+  para afinar la convergencia.
+- El dataset se **balancea automáticamente** con augmentation gaussiana
+  (ruido σ=0.02) para igualar la cantidad de muestras por clase.
+- Las gráficas se generan **en memoria** con Matplotlib usando un
+  backend sin pantalla (`Agg`), sin escribir archivos temporales en
+  disco.
