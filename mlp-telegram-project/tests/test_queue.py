@@ -2,8 +2,13 @@
 Pruebas unitarias para la estructura de datos Queue ubicada en
 data_structures/queue.py.
 
-Autor:
-- Cristian Cortes
+Autores:
+    Cristian Cortes
+    Katherine Arboleda
+
+Curso:
+    Análisis y Diseño de Algoritmos
+    Universidad del Valle
 """
 
 # Framework utilizado para ejecutar las pruebas unitarias

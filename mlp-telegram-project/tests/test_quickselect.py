@@ -7,8 +7,13 @@ Pruebas unitarias para las funciones:
 
 implementadas en algorithms/quickselect.py
 
-Autor:
-- Cristian Cortes
+Autores:
+    Cristian Cortes
+    Katherine Arboleda
+
+Curso:
+    Análisis y Diseño de Algoritmos
+    Universidad del Valle
 
 Objetivo:
 Validar el correcto funcionamiento del algoritmo Quickselect y de la
