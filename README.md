@@ -443,10 +443,16 @@ python3 -m pytest tests/ -v
 
 > Ejecución individual de cada test
 ```bash
+python3 -m pytest tests/test_batch_loader.py -v
+python3 -m pytest tests/test_complexity_model_service.py -v
+python3 -m pytest tests/test_complexity_plotter.py -v
+python3 -m pytest tests/test_encoding.py -v
+python3 -m pytest tests/test_feature_extractor.py -v
 python3 -m pytest tests/test_hard_minig.py -v
 python3 -m pytest tests/test_hash_table.py -v
 python3 -m pytest tests/test_queue.py -v
 python3 -m pytest tests/test_quickselect.py -v
+python3 -m pytest tests/test_top_k.py -v
 ```
 
 ---
