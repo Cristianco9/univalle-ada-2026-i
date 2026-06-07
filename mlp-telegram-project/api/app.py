@@ -61,6 +61,13 @@ from experiments.benchmark import (
     benchmark_top_k
 )
 
+# Importación de la función para generar gráficos de métricas
+# desde el módulo de visualización de complejidad.
+# Esta función se utiliza para crear gráficos de evolución de accuracy
+# y loss durante el entrenamiento del modelo MLP.
+from fastapi.responses import Response
+from complexity.complexity_plotter import generate_complexity_plot
+
 
 class CodeInput(BaseModel):
     """
@@ -284,3 +291,28 @@ def complexity():
         "mlp_forward":         "O(B * h * output)",
         "mlp_backprop":        "O(B * h * output)",
     }
+
+@app.get("/analize/plot")
+def analize_plot(complexity: str = "O(n)"):
+    """
+    Genera un gráfico de evolución de métricas para una complejidad específica.
+    Este endpoint permite visualizar cómo han evolucionado las métricas de 
+    entrenamiento (accuracy y loss) para un tipo de complejidad dado.
+    Parameters
+    ----------
+    complexity : str
+        La complejidad temporal para la cual generar el gráfico.
+    Returns
+    -------
+    Response
+        Imagen PNG del gráfico generado.
+
+    Ejemplo:
+        GET /analize/plot?complexity=O(n²)
+    """
+    
+    image_bytes = generate_complexity_plot(complexity)
+    return Response(
+        content=image_bytes,
+        media_type="image/png"
+    )

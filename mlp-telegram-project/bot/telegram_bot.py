@@ -478,84 +478,92 @@ async def analize_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ─────────────────────────────────────────────────────────────────────────────
 # Helper principal
 # ─────────────────────────────────────────────────────────────────────────────
-
 async def _call_analize_api(update: Update, code: str):
-    """
-    Función auxiliar encargada de comunicarse con la API REST
-    para realizar la clasificación de complejidad algorítmica.
-
-    Parameters
-    ----------
-    update : Update
-        Información del mensaje recibido.
-
-    code : str
-        Fragmento de código Python a analizar.
-
-    Returns
-    -------
-    None
-    """
-
     try:
         response = requests.post(
             f"{API_URL}/analize",
             json={"code": code},
             timeout=10
         )
-
         data = response.json()
 
         if "error" in data:
-            await update.message.reply_text(
-                f"Error: {data['error']}"
-            )
+            await update.message.reply_text(f"Error: {data['error']}")
             return
 
         complexity = data.get("complexity", "?")
         confidence = data.get("confidence", 0)
-        top3 = data.get("top3", [])
+        top3       = data.get("top3", [])
 
         emoji_map = {
-            "O(1)": "🟢",
-            "O(log n)": "🟡",
-            "O(n)": "🟡",
+            "O(1)":       "🟢",
+            "O(log n)":   "🟡",
+            "O(n)":       "🟡",
             "O(n log n)": "🟠",
-            "O(n²)": "🔴",
-            "O(n³)": "🔴",
-            "O(2^n)": "💀",
-            "O(n!)": "💀",
+            "O(n²)":      "🔴",
+            "O(n³)":      "🔴",
+            "O(2^n)":     "💀",
+            "O(n!)":      "💀",
         }
 
         reason_map = {
-            "O(1)": "Operaciones constantes.",
-            "O(log n)": "Reducción logarítmica.",
-            "O(n)": "Recorrido lineal.",
-            "O(n log n)": "Divide y vencerás.",
-            "O(n²)": "Bucles anidados.",
-            "O(n³)": "Triple iteración.",
-            "O(2^n)": "Explosión exponencial.",
-            "O(n!)": "Permutaciones factoriales.",
+            "O(1)":       "Operaciones constantes: acceso directo, sin bucles ni recursion.",
+            "O(log n)":   "Reduccion logaritmica: division del problema a la mitad en cada paso.",
+            "O(n)":       "Recorrido lineal: el tiempo crece proporcional al tamano de entrada.",
+            "O(n log n)": "Ordenamiento eficiente: divide y combina linealmente en cada nivel.",
+            "O(n²)":      "Doble iteracion: bucles anidados que comparan o procesan todos los pares.",
+            "O(n³)":      "Triple iteracion: tres bucles anidados sobre la misma entrada.",
+            "O(2^n)":     "Explosion exponencial: recursion que se ramifica en dos llamadas por nivel.",
+            "O(n!)":      "Complejidad factorial: genera todas las permutaciones posibles.",
         }
 
-        emoji = emoji_map.get(complexity, "🔵")
-        reason = reason_map.get(complexity, "Patrón no identificado.")
-
+        emoji    = emoji_map.get(complexity, "🔵")
+        reason   = reason_map.get(complexity, "Patron no identificado.")
         conf_pct = round(confidence * 100, 1)
+
+        if conf_pct >= 90:
+            certeza = "Alta certeza"
+        elif conf_pct >= 70:
+            certeza = "Certeza moderada"
+        else:
+            certeza = "Baja certeza — revisa el codigo manualmente"
+
+        top3_text = "\nDistribucion de probabilidades:\n"
+        for item in top3:
+            pct    = round(item['probability'] * 100, 1)
+            icon   = "🟢" if pct >= 70 else "🟡" if pct >= 40 else "🔴"
+            marker = " <- elegida" if item['complexity'] == complexity else ""
+            top3_text += f"  {icon} {item['complexity']:10s} {pct:5.1f}%{marker}\n"
 
         text = (
             f"Analisis de Complejidad\n\n"
             f"{emoji} Complejidad: {complexity}\n"
             f"Razon: {reason}\n"
-            f"Confianza: {conf_pct}%"
+            f"Confianza: {conf_pct}% ({certeza})"
+            f"{top3_text}"
         )
 
+        # 1. Enviar el texto
         await update.message.reply_text(text)
 
-    except Exception as e:
-        await update.message.reply_text(
-            f"Error al analizar: {str(e)}"
+        # 2. Obtener y enviar la gráfica como imagen
+        plot_response = requests.get(
+            f"{API_URL}/analize/plot",
+            params={"complexity": complexity},
+            timeout=15
         )
+
+        if plot_response.status_code == 200:
+            import io
+            photo_bytes = io.BytesIO(plot_response.content)
+            photo_bytes.name = "complexity.png"
+            await update.message.reply_photo(
+                photo=photo_bytes,
+                caption=f"Grafica de complejidad {complexity}"
+            )
+
+    except Exception as e:
+        await update.message.reply_text(f"Error al analizar: {str(e)}")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
