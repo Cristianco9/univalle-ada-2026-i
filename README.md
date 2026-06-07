@@ -436,11 +436,17 @@ contiene palabras clave como `def`, `for`, `while`, `return`.
 
 ## Ejecución de Tests
 
+> Ejecución de todos los test
 ```bash
-python3 tests/test_hash_table.py
-python3 tests/test_queue.py
-python3 tests/test_quickselect.py
-python3 tests/test_hard_mining.py
+python3 -m pytest tests/ -v
+```
+
+> Ejecución individual de cada test
+```bash
+python3 -m pytest tests/test_hard_minig.py -v
+python3 -m pytest tests/test_hash_table.py -v
+python3 -m pytest tests/test_queue.py -v
+python3 -m pytest tests/test_quickselect.py -v
 ```
 
 ---
