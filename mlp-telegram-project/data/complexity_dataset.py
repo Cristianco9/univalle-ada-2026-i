@@ -680,6 +680,217 @@ def sort_frequency(arr):
     freq = Counter(arr)
     return sorted(arr, key=lambda x: freq[x])
 """, 3),
+# ── O(n log n) — 20 snippets nuevos ──────────────────────────────────────────
+  ("""
+def count_smaller(arr, target):
+    arr.sort()
+    count = 0
+    for x in arr:
+        if x < target:
+            count += 1
+    return count
+""", 3),
+ 
+    ("""
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+ 
+def merge_sort_clean(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    return merge(merge_sort_clean(arr[:mid]), merge_sort_clean(arr[mid:]))
+""", 3),
+ 
+    ("""
+def find_duplicates_sorted(arr):
+    arr.sort()
+    duplicates = []
+    for i in range(1, len(arr)):
+        if arr[i] == arr[i-1]:
+            duplicates.append(arr[i])
+    return duplicates
+""", 3),
+ 
+    ("""
+def intersection_sorted(a, b):
+    a.sort()
+    b.sort()
+    result = []
+    i = j = 0
+    while i < len(a) and j < len(b):
+        if a[i] == b[j]:
+            result.append(a[i])
+            i += 1
+            j += 1
+        elif a[i] < b[j]:
+            i += 1
+        else:
+            j += 1
+    return result
+""", 3),
+ 
+    ("""
+def sort_and_remove_dups(arr):
+    if not arr:
+        return []
+    arr.sort()
+    result = [arr[0]]
+    for i in range(1, len(arr)):
+        if arr[i] != arr[i-1]:
+            result.append(arr[i])
+    return result
+""", 3),
+ 
+    ("""
+def majority_element(arr):
+    arr.sort()
+    return arr[len(arr) // 2]
+""", 3),
+ 
+    ("""
+def two_sum_sorted(arr, target):
+    arr.sort()
+    lo, hi = 0, len(arr) - 1
+    while lo < hi:
+        s = arr[lo] + arr[hi]
+        if s == target:
+            return (arr[lo], arr[hi])
+        elif s < target:
+            lo += 1
+        else:
+            hi -= 1
+    return None
+""", 3),
+ 
+    ("""
+def group_anagrams_count(words):
+    words.sort()
+    count = 1
+    groups = 1
+    for i in range(1, len(words)):
+        if sorted(words[i]) == sorted(words[i-1]):
+            count += 1
+        else:
+            groups += 1
+            count = 1
+    return groups
+""", 3),
+ 
+    ("""
+def find_median_two(arr):
+    arr.sort()
+    n = len(arr)
+    if n % 2 == 0:
+        return (arr[n//2 - 1] + arr[n//2]) / 2
+    return arr[n//2]
+""", 3),
+ 
+    ("""
+def sort_colors(arr):
+    arr.sort()
+    return arr
+""", 3),
+ 
+    ("""
+def merge_intervals(intervals):
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+    return merged
+""", 3),
+ 
+    ("""
+def sort_by_second(pairs):
+    return sorted(pairs, key=lambda x: x[1])
+""", 3),
+ 
+    ("""
+def nth_largest(arr, n):
+    arr.sort()
+    return arr[-n]
+""", 3),
+ 
+    ("""
+def timsort_wrapper(arr):
+    result = arr.copy()
+    result.sort()
+    return result
+""", 3),
+ 
+    ("""
+def sort_and_zip(a, b):
+    a.sort()
+    b.sort()
+    return list(zip(a, b))
+""", 3),
+ 
+    ("""
+def unique_sorted(arr):
+    return sorted(set(arr))
+""", 3),
+ 
+    ("""
+def bottom_up_merge_sort(arr):
+    width = 1
+    n = len(arr)
+    while width < n:
+        for i in range(0, n, width * 2):
+            left = arr[i:i + width]
+            right = arr[i + width:i + width * 2]
+            merged = []
+            li = ri = 0
+            while li < len(left) and ri < len(right):
+                if left[li] <= right[ri]:
+                    merged.append(left[li])
+                    li += 1
+                else:
+                    merged.append(right[ri])
+                    ri += 1
+            merged.extend(left[li:])
+            merged.extend(right[ri:])
+            arr[i:i + len(merged)] = merged
+        width *= 2
+    return arr
+""", 3),
+ 
+    ("""
+def sort_and_count_inversions(arr):
+    arr.sort()
+    count = 0
+    for i in range(len(arr)):
+        for j in range(i):
+            if arr[j] > arr[i]:
+                count += 1
+    return arr
+""", 3),
+ 
+    ("""
+def rank_transform(arr):
+    sorted_unique = sorted(set(arr))
+    rank_map = {v: i+1 for i, v in enumerate(sorted_unique)}
+    return [rank_map[x] for x in arr]
+""", 3),
+ 
+    ("""
+def smallest_k_elements(arr, k):
+    return sorted(arr)[:k]
+""", 3),
 
     # ── O(n²) ── 22 samples ───────────────────────────────────────────────────
     ("""
@@ -897,6 +1108,236 @@ def matrix_diagonal_sum(M):
             if i == j or i + j == n - 1:
                 total += M[i][j]
     return total
+""", 4),
+# ── O(n²) — 20 snippets nuevos ───────────────────────────────────────────────
+  ("""
+def naive_contains_duplicate(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(n):
+            if i != j and arr[i] == arr[j]:
+                return True
+    return False
+""", 4),
+ 
+    ("""
+def matrix_vector_multiply(M, v):
+    n = len(M)
+    result = [0] * n
+    for i in range(n):
+        for j in range(n):
+            result[i] += M[i][j] * v[j]
+    return result
+""", 4),
+ 
+    ("""
+def count_pairs_equal_sum(arr, target):
+    count = 0
+    for i in range(len(arr)):
+        for j in range(len(arr)):
+            if i != j and arr[i] + arr[j] == target:
+                count += 1
+    return count // 2
+""", 4),
+ 
+    ("""
+def naive_string_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    positions = []
+    for i in range(n - m + 1):
+        match = True
+        for j in range(m):
+            if text[i + j] != pattern[j]:
+                match = False
+                break
+        if match:
+            positions.append(i)
+    return positions
+""", 4),
+ 
+    ("""
+def pascal_triangle(n):
+    triangle = []
+    for i in range(n):
+        row = [1] * (i + 1)
+        for j in range(1, i):
+            row[j] = triangle[i-1][j-1] + triangle[i-1][j]
+        triangle.append(row)
+    return triangle
+""", 4),
+ 
+    ("""
+def max_rectangle_naive(heights):
+    n = len(heights)
+    max_area = 0
+    for i in range(n):
+        for j in range(i, n):
+            min_h = min(heights[i:j+1])
+            max_area = max(max_area, min_h * (j - i + 1))
+    return max_area
+""", 4),
+ 
+    ("""
+def outer_product(a, b):
+    result = []
+    for x in a:
+        row = []
+        for y in b:
+            row.append(x * y)
+        result.append(row)
+    return result
+""", 4),
+ 
+    ("""
+def is_unique_pairs(arr):
+    pairs = set()
+    for i in range(len(arr)):
+        for j in range(i+1, len(arr)):
+            pairs.add((arr[i], arr[j]))
+    return len(pairs)
+""", 4),
+ 
+    ("""
+def naive_lcs_length(s1, s2):
+    m, n = len(s1), len(s2)
+    max_len = 0
+    for i in range(m):
+        for j in range(n):
+            length = 0
+            while (i + length < m and j + length < n
+                   and s1[i+length] == s2[j+length]):
+                length += 1
+            max_len = max(max_len, length)
+    return max_len
+""", 4),
+ 
+    ("""
+def spiral_order(matrix):
+    result = []
+    n = len(matrix)
+    for i in range(n):
+        for j in range(n):
+            result.append(matrix[i][j])
+    return result
+""", 4),
+ 
+    ("""
+def distance_matrix(points):
+    n = len(points)
+    dist = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            dx = points[i][0] - points[j][0]
+            dy = points[i][1] - points[j][1]
+            dist[i][j] = (dx*dx + dy*dy) ** 0.5
+    return dist
+""", 4),
+ 
+    ("""
+def count_smaller_pairs(arr):
+    count = 0
+    n = len(arr)
+    for i in range(n):
+        for j in range(i+1, n):
+            if arr[j] < arr[i]:
+                count += 1
+    return count
+""", 4),
+ 
+    ("""
+def all_substrings(s):
+    result = []
+    n = len(s)
+    for i in range(n):
+        for j in range(i+1, n+1):
+            result.append(s[i:j])
+    return result
+""", 4),
+ 
+    ("""
+def min_distance_pair(arr):
+    min_dist = float('inf')
+    for i in range(len(arr)):
+        for j in range(i+1, len(arr)):
+            dist = abs(arr[i] - arr[j])
+            if dist < min_dist:
+                min_dist = dist
+    return min_dist
+""", 4),
+ 
+    ("""
+def comb_sort(arr):
+    gap = len(arr)
+    shrink = 1.3
+    sorted_flag = False
+    while not sorted_flag:
+        gap = int(gap / shrink)
+        if gap <= 1:
+            gap = 1
+            sorted_flag = True
+        i = 0
+        while i + gap < len(arr):
+            if arr[i] > arr[i + gap]:
+                arr[i], arr[i + gap] = arr[i + gap], arr[i]
+                sorted_flag = False
+            i += 1
+    return arr
+""", 4),
+ 
+    ("""
+def max_sum_subarray_brute(arr):
+    n = len(arr)
+    max_sum = float('-inf')
+    for i in range(n):
+        s = 0
+        for j in range(i, n):
+            s += arr[j]
+            max_sum = max(max_sum, s)
+    return max_sum
+""", 4),
+ 
+    ("""
+def check_matrix_identity(M):
+    n = len(M)
+    for i in range(n):
+        for j in range(n):
+            expected = 1 if i == j else 0
+            if M[i][j] != expected:
+                return False
+    return True
+""", 4),
+ 
+    ("""
+def naive_set_intersection(a, b):
+    result = []
+    for x in a:
+        for y in b:
+            if x == y and x not in result:
+                result.append(x)
+    return result
+""", 4),
+ 
+    ("""
+def count_zero_rows(matrix):
+    count = 0
+    for row in matrix:
+        all_zero = True
+        for val in row:
+            if val != 0:
+                all_zero = False
+        if all_zero:
+            count += 1
+    return count
+""", 4),
+ 
+    ("""
+def flatten_matrix(matrix):
+    result = []
+    for row in matrix:
+        for val in row:
+            result.append(val)
+    return result
 """, 4),
 
     # ── O(n³) ── 15 samples ───────────────────────────────────────────────────
